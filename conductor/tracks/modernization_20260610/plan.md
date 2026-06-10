@@ -27,15 +27,15 @@ Workflow: each task gets its own commit; the task line gets the 7-char SHA appen
 
 ## Phase 3: Agent Skills Standard Migration
 
-- [ ] Task: Restructure canonical `SKILL.md` to Agent Skills spec: conformant frontmatter (name, description <=1024 chars tuned for auto-discovery, license, compatibility), body under 500 lines, long material moved to `references/`
-- [ ] Task: Update `scripts/compile-skill.js` to emit the spec-compliant package (standard + pro variants) and the `references/` tree
-- [ ] Task: Remove `.agent/` adapter bundles (skills/humanizer, skills/humanizer-pro, workflows, rules) and all doc references to them
-- [ ] Task: Remove instruction-only sub-skill npm stubs (`humanizer-structure`, `humanizer-factcheck`, `humanizer-inclusive`); keep code packages (`humanizer-next`, `humanizer-logic`, `humanizer-read`, `humanizer-orchestrate`)
-- [ ] Task: Add npm `workspaces` to root `package.json` over the surviving packages; verify install and tests
-- [ ] Task: Update MCP server tool registry and swarmer tests to the surviving skill set
-- [ ] Task: Document plugin-bundle layout and skills.sh-style installation in `docs/skill-distribution.md`
-- [ ] Task: Update `renovate.json` with per-directory packageRules / additionalBranchPrefix for the workspace
-- [ ] Task: Conductor - Phase Verification and Review of Phase 3
+- [x] Task: Restructure canonical `SKILL.md` to Agent Skills spec: conformant frontmatter (name, description <=1024 chars tuned for auto-discovery, license, compatibility), body under 500 lines, long material moved to `references/` [ef05fa5]
+- [x] Task: Update `scripts/compile-skill.js` to emit the spec-compliant package (standard + pro variants) and the `references/` tree [ef05fa5]
+- [x] Task: Remove `.agent/` adapter bundles (skills/humanizer, skills/humanizer-pro, workflows, rules) and all doc references to them [ef05fa5]
+- [x] Task: Remove instruction-only sub-skill npm stubs (`humanizer-structure`, `humanizer-factcheck`, `humanizer-inclusive`); keep code packages (`humanizer-next`, `humanizer-logic`, `humanizer-read`, `humanizer-orchestrate`) [ef05fa5]
+- [x] Task: Add npm `workspaces` to root `package.json` over the surviving packages; verify install and tests [ef05fa5]
+- [x] Task: Update MCP server tool registry and swarmer tests to the surviving skill set [ef05fa5]
+- [x] Task: Document plugin-bundle layout and skills.sh-style installation in `docs/skill-distribution.md` [ef05fa5]
+- [x] Task: Update `renovate.json` with per-directory packageRules / additionalBranchPrefix for the workspace [ef05fa5]
+- [x] Task: Conductor - Phase Verification and Review of Phase 3
 
 ## Phase 4: Sync Machinery Modernization
 
