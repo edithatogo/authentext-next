@@ -7,8 +7,8 @@ Workflow: each task gets its own commit; the task line gets the 7-char SHA appen
 ## Phase 1: Upstream Sync (blader/humanizer v2.8.0)
 
 - [x] Task: Fetch upstream SKILL.md (v2.8.0) and produce a structured diff against the local pattern catalog in `src/modules/` [4d208c3]
-- [x] Task: Adopt patterns 31-33 (manufactured punchlines/staccato cadence, aphorism formulas, conversational rhetorical openers) into `src/modules/SKILL_CORE_PATTERNS.md`
-- [ ] Task: Port v2.5-v2.8 refinements (em/en-dash hard cut, gap-filling tell, diff-anchored writing, narrowed hyphen rule, content-preservation guarantees) into the relevant modules
+- [x] Task: Adopt patterns 31-33 (manufactured punchlines/staccato cadence, aphorism formulas, conversational rhetorical openers) into `src/modules/SKILL_CORE_PATTERNS.md` [64b8dc7]
+- [x] Task: Port v2.5-v2.8 refinements (em/en-dash hard cut, gap-filling tell, diff-anchored writing, narrowed hyphen rule, content-preservation guarantees) into the relevant modules
 - [ ] Task: Port upstream Detection Guidance (false positives, human-writing signs, LLM idiolects) into `src/modules/`
 - [ ] Task: Add `LICENSE` at repo root (match upstream license family)
 - [ ] Task: Evaluate upstream issues #137, #130, #93 and record adopt/defer decisions in `conductor/tracks/modernization_20260610/upstream-decisions.md`

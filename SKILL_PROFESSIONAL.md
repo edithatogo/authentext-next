@@ -103,7 +103,7 @@ Vary sentence rhythm with short and long lines. Use specific details instead of 
 module_id: core_patterns
 version: 3.2.0
 description: Core AI writing pattern detection (always applied)
-patterns: 37
+patterns: 39
 severity_levels:
   - Critical
   - High
@@ -124,10 +124,10 @@ Based on Wikipedia's "Signs of AI writing" page, maintained by WikiProject AI Cl
 When given text to humanize:
 
 1. **Identify AI patterns** - Scan for the patterns listed below
-2. **Rewrite problematic sections** - Replace AI-isms with natural alternatives
+2. **Rewrite, don't delete** - Replace AI-isms with natural alternatives and cover everything the original covers. If the original has five paragraphs, the rewrite has five paragraphs. (Content-preservation guarantee from upstream v2.8.)
 3. **Preserve meaning** - Keep the core message intact
 4. **Maintain voice** - Match the intended tone (formal, casual, technical, etc.)
-5. **Add soul** - Don't just remove bad patterns; inject actual personality
+5. **Add soul** - Don't just remove bad patterns; inject actual personality when appropriate (see PERSONALITY AND SOUL)
 
 ---
 
@@ -370,9 +370,11 @@ Have opinions and react to facts. Vary sentence rhythm with short and long lines
 
 ## STYLE PATTERNS
 
-### Pattern 13: Em Dash Overuse
+### Pattern 13: Em/En Dash Hard Cut
 
-**Problem:** LLMs use em dashes (—) more than humans, mimicking "punchy" sales writing.
+**Problem:** LLMs overuse em dashes (—) and en dashes (–), mimicking punchy sales writing. The em/en dash is one of the most reliable AI tells; treat as a hard constraint in final output, not "use sparingly".
+
+**Rule (final rewrite):** Contains no em dashes (—) or en dashes (–). Also catch spaced (`—`) and double-hyphen (`--`) aliases. Replace in preference order: period (new sentence), comma (tight aside), colon (explanation), parentheses (true aside), or restructure.
 
 **Severity:** Low
 
@@ -383,6 +385,8 @@ Have opinions and react to facts. Vary sentence rhythm with short and long lines
 **After:**
 
 > The term is primarily promoted by Dutch institutions, not by the people themselves. You don't say "Netherlands, Europe" as an address, yet this mislabeling continues in official documents.
+
+**Not a problem when:** Used sparingly by a human editor/journalist and not clustered with other sales-y tells (see Detection Guidance).
 
 ---
 
@@ -495,21 +499,29 @@ Have opinions and react to facts. Vary sentence rhythm with short and long lines
 
 ---
 
-### Pattern 20: Knowledge-Cutoff Disclaimers
+### Pattern 20: Knowledge-Cutoff Disclaimers and Speculative Gap-Filling (includes upstream v2.8 refinement)
 
-**Words to watch:** as of [date], Up to my last training update, While specific details are limited/scarce..., based on available information...
+**Words to watch:** as of [date], Up to my last training update, While specific details are limited/scarce..., based on available information..., maintains a low profile, keeps personal details private (when unsourced)
 
-**Problem:** AI disclaimers about incomplete information get left in text.
+**Problem:** Two related tells. (a) Older models leave hard knowledge-cutoff disclaimers. (b) When a model can't find a source, it writes a paragraph _about_ not finding one and then invents plausible filler to cover the gap (speculative gap-filling). For private persons the guess almost always lands on stock phrases. Say what isn't known, or cut; don't dress a guess up as fact.
 
 **Severity:** Critical
 
-**Before:**
+**Before (cutoff):**
 
 > While specific details about the company's founding are not extensively documented in readily available sources, it appears to have been established sometime in the 1990s.
 
 **After:**
 
 > The company was founded in 1994, according to its registration documents.
+
+**Before (speculative gap-fill):**
+
+> Little is known about the founder. He maintains a low profile and keeps personal details private.
+
+**After:**
+
+> Public records list the founder as J. Smith (registered 2019, address redacted). No further biographical sources were located.
 
 ---
 
@@ -767,6 +779,8 @@ The system processes requests in under 100ms.
 - Pattern 35: Manufactured punchlines and staccato drama (Upstream #31)
 - Pattern 36: Aphorism formulas (Upstream #32)
 - Pattern 37: Conversational rhetorical openers (Upstream #33)
+- Pattern 38: Diff-anchored writing (upstream refinement)
+- Pattern 39: Hyphenated word pair overuse (narrowed, upstream)
 - Pattern 14: Overuse of boldface
 - Pattern 15: Inline-header lists
 - Pattern 16: Title case in headings
@@ -784,7 +798,7 @@ The system processes requests in under 100ms.
 
 _Module Version: 3.1.0_
 _Last Updated: 2026-04-04_
-_Patterns: 37 (30 core + 4 local LLM variants + 3 upstream v2.8.0 style cadence: 35-37)_
+_Patterns: 39 (30 core + 4 local LLM variants + 3 upstream style 35-37 + 2 upstream refinements 38-39)_
 _Source: Wikipedia "Signs of AI writing" + Humanizer community contributions + 2025-2026 LLM analysis_
 
 ---
@@ -927,6 +941,40 @@ _Source: Wikipedia "Signs of AI writing" + Humanizer community contributions + 2
 > Whether it's worth the price depends on how often you'll use it.
 
 **Not a problem when:** Genuine conversational speech or quoted dialogue.
+
+---
+
+### Pattern 38: Diff-Anchored Writing (upstream v2.8 refinement)
+
+**Problem:** Documentation or comments written as if narrating a change rather than describing the thing as it is. Unless the document is inherently version-scoped (changelogs, release notes, migration guides), it should read coherently without knowing what changed in the last commit.
+
+**Severity:** Low
+
+**Before:**
+
+> This function was added to replace the previous approach of iterating through all items, which caused O(n²) performance.
+
+**After:**
+
+> This function uses a hash map for O(1) lookups, avoiding the O(n²) cost of naive iteration.
+
+---
+
+### Pattern 39: Hyphenated Word Pair Overuse (narrowed rule, upstream v2.8)
+
+**Words to watch:** third-party, cross-functional, client-facing, data-driven, decision-making, well-known, high-quality, real-time, long-term, end-to-end
+
+**Problem:** AI hyphenates these uniformly, including in predicate position (`the report is high-quality`). Humans hyphenate inconsistently — typically only when the compound is attributive (`a high-quality report`) and often dropping the hyphen otherwise (`the report is high quality`). Keep attributive-position hyphens; drop them when the compound follows the noun.
+
+**Severity:** Low
+
+**Before:**
+
+> The cross-functional team delivered a high-quality, data-driven report. The team is cross-functional, the report is high-quality, and the methodology is data-driven.
+
+**After:**
+
+> The cross-functional team delivered a high-quality, data-driven report. The team is cross functional, the report is high quality, and the methodology is data driven.
 
 
 ---

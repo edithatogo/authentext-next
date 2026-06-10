@@ -27,7 +27,15 @@
   "lint-staged": {
     "**/*.{js,mjs,ts}": "eslint --fix",
     "**/*.md": "markdownlint --fix",
-    "**/*.{js,json,md,mdx,css,scss,ts,tsx}": "prettier --write"
+    "!{SKILL,SKILL_PROFESSIONAL}.md": "markdownlint --fix",
+    "AGENTS.md": "prettier --write",
+    "README.md": "prettier --write",
+    "package.json": "prettier --write",
+    "tsconfig.json": "prettier --write",
+    "src/**/*.{js,json,md,mdx,css,scss,ts,tsx}": "prettier --write",
+    "scripts/**/*.{js,json,md,mdx,css,scss,ts,tsx}": "prettier --write",
+    "test/**/*.{js,json,md,mdx,css,scss,ts,tsx}": "prettier --write",
+    "conductor/**/*.md": "prettier --write"
   },
   "keywords": [
     "agent-skill",
