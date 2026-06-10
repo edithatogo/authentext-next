@@ -10,8 +10,8 @@ Workflow: each task gets its own commit; the task line gets the 7-char SHA appen
 - [x] Task: Adopt patterns 31-33 (manufactured punchlines/staccato cadence, aphorism formulas, conversational rhetorical openers) into `src/modules/SKILL_CORE_PATTERNS.md` [64b8dc7]
 - [x] Task: Port v2.5-v2.8 refinements (em/en-dash hard cut, gap-filling tell, diff-anchored writing, narrowed hyphen rule, content-preservation guarantees) into the relevant modules [1532ac9]
 - [x] Task: Port upstream Detection Guidance (false positives, human-writing signs, LLM idiolects) into `src/modules/` [708908c]
-- [x] Task: Add `LICENSE` at repo root (match upstream license family)
-- [ ] Task: Evaluate upstream issues #137, #130, #93 and record adopt/defer decisions in `conductor/tracks/modernization_20260610/upstream-decisions.md`
+- [x] Task: Add `LICENSE` at repo root (match upstream license family) [7079494]
+- [x] Task: Evaluate upstream issues #137, #130, #93 and record adopt/defer decisions in `conductor/tracks/modernization_20260610/upstream-decisions.md`
 - [ ] Task: Recompile (`npm run sync`), update pattern counts in README/docs, run `npm run validate`
 - [ ] Task: Conductor - Phase Verification and Review of Phase 1
 
