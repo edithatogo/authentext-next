@@ -1,7 +1,8 @@
 const assert = require('assert');
 
 /**
- * TDD: Failing tests for MCP Server Initialization
+
+* TDD: Failing tests for MCP Server Initialization
  */
 
 console.log("Running MCP Server tests...");
@@ -17,12 +18,11 @@ try {
     console.log("- Testing server initialization");
     assert.strictEqual(server.name, "humanizer-server", "Server should have the correct name");
     
-    console.log("- Testing tool registration (should have 8 tools)");
+    console.log("- Testing tool registration (should have 7 tools)");
     const tools = server.getRegisteredTools();
     const expectedTools = [
         'humanizer-next',
         'humanizer-logic',
-        'humanizer-cite',
         'humanizer-read',
         'humanizer-structure',
         'humanizer-factcheck',

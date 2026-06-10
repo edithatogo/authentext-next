@@ -1,6 +1,7 @@
 /**
- * Humanizer MCP Server
- * Exposes specialized humanizer skills as MCP tools.
+
+* Humanizer MCP Server
+* Exposes specialized humanizer skills as MCP tools.
  */
 
 class HumanizerMCPServer {
@@ -12,7 +13,7 @@ class HumanizerMCPServer {
     }
 
     _initializeTools() {
-        // Registering the 8 independent skills
+        // Registering the 7 independent skills (humanizer-cite moved to sourceright)
         const skills = [
             {
                 name: 'humanizer-next',
@@ -21,10 +22,6 @@ class HumanizerMCPServer {
             {
                 name: 'humanizer-logic',
                 description: 'Logic and reasoning: Identify and fix reasoning failures'
-            },
-            {
-                name: 'humanizer-cite',
-                description: 'Citations and formatting: Normalize quotes and references'
             },
             {
                 name: 'humanizer-read',
