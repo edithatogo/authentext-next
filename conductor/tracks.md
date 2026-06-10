@@ -158,7 +158,6 @@ Archive includes:
 - `scripts/check-sync-clean.js` - Sync drift check
 - `scripts/validate-docs.js` - Documentation validation
 - `scripts/run-tests.js` - Test runner
-- `scripts/research/citation-normalize.js` - Citation helper
 
 ### Workflows
 

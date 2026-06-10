@@ -19,8 +19,8 @@ Workflow: each task gets its own commit; the task line gets the 7-char SHA appen
 
 - [x] Task: Remove `humanizer-cite` registration from `skills/humanizer-orchestrate/lib/mcp-server.js` and update orchestrate tests (8 tools to 7) [2bfd5aa]
 - [x] Task: Delete `skills/humanizer-cite/` (package.json, lib, tests) [7b67289]
-- [~] Task: Delete `experiments/citation_ref_manager/` (entire tree)
-- [ ] Task: Delete `scripts/research/citation-normalize.js` and remove its listing from `conductor/tracks.md` key deliverables
+- [x] Task: Delete `experiments/citation_ref_manager/` (entire tree) [8eb16f4]
+- [~] Task: Delete `scripts/research/citation-normalize.js` and remove its listing from `conductor/tracks.md` key deliverables
 - [ ] Task: Remove `src/references.json` and `src/research_references.md` (content lives in sourceright); fix any compile/validate references to them
 - [ ] Task: Rewrite `docs/citation-manager-boundary.md` to record sourceright as the permanent home; sweep remaining mentions in `.github/copilot-instructions.md`, `conductor/product.md`, `conductor/product-guidelines.md`
 - [ ] Task: Conductor - Phase Verification and Review of Phase 2

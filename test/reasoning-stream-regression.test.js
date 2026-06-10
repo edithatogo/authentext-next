@@ -1,5 +1,6 @@
 /**
- * Regression tests for Humanizer reasoning and source coverage
+
+* Regression tests for Humanizer reasoning and source coverage
  */
 
 import fs from 'fs';
@@ -117,10 +118,7 @@ console.log(`Documentation tests: ${docsExist}/${docsToCheck.length} passed`);
 // Test 4: Verify that the reasoning stream source files exist
 console.log('\nTest 4: Verifying reasoning stream source files exist');
 
-const sourceFilesToCheck = [
-  './src/reasoning-stream/module.md',
-  './scripts/research/citation-normalize.js',
-];
+const sourceFilesToCheck = ['./src/reasoning-stream/module.md'];
 
 let sourcesExist = 0;
 for (const sourcePath of sourceFilesToCheck) {
