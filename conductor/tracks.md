@@ -8,7 +8,7 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ## Active Tracks
 
-No active tracks.
+- [~] **modernization_20260610** (P0) - Bleeding-edge modernization: upstream v2.8.0 sync, sourceright extraction, Agent Skills standard migration, sync-machinery and health fixes. See [`tracks/modernization_20260610/`](./tracks/modernization_20260610/spec.md).
 
 ---
 
@@ -19,6 +19,7 @@ No active tracks.
 **Completion Date:** 2026-04-26
 
 **Latest Archives:**
+
 - v4-architecture_20260415 (Modular V4 Architecture & Ecosystem Overhaul)
 - upstream-pr-adoption_20260304 (Patterns 28-30 adopted)
 - self-improvement-cycle2_20260304 (Ralph Loop automation scheduled)
@@ -28,6 +29,7 @@ No active tracks.
 ## Completed Tracks Summary
 
 ### P0 Critical - V4 Architecture & Ecosystem Overhaul
+
 - [x] **v4-architecture_20260415** [041fb68] - Modular V4 Architecture & Ecosystem Overhaul
   - **Duration:** 11 days
   - **Achievements:**
@@ -38,6 +40,7 @@ No active tracks.
   - **Deliverables:** 29/29 tasks complete
 
 ### P0 Critical - Upstream Adoption (Latest)
+
 - [x] **upstream-pr-adoption_20260304** [84df0b8] - Upstream PR adoption (Patterns 28-30)
   - **Duration:** 1 hour
   - **Achievements:**
@@ -47,6 +50,7 @@ No active tracks.
   - **Deferred:** PR #49, #16, #17, #44 to future cycles
 
 ### P1 Recurring - Self-Improvement
+
 - [x] **self-improvement-cycle2_20260304** [84df0b8] - Ralph Loop self-improvement cycle #2
   - **Duration:** 30 minutes
   - **Achievements:**
@@ -55,6 +59,7 @@ No active tracks.
     - Manual alternative documented
 
 ### P0 Implementation (Previous)
+
 - [x] **adr-implementation-upstream_20260303** [cea2151] - ADR-001 modular architecture implementation
   - **Duration:** 1 day
   - **Achievements:**
@@ -67,6 +72,7 @@ No active tracks.
   - **Status:** ADR-001 complete, upstream PRs deferred to future track
 
 ### P1 Maintenance & Improvement (Previous)
+
 - [x] **repo-self-improvement_20260303** [70b0b88] - Repository self-improvement cycle #1
   - **Duration:** 1 day (21x faster than estimated)
   - **Achievements:**
@@ -85,6 +91,7 @@ No active tracks.
 ## Completed Tracks Summary (Previous)
 
 ### P0 Critical Path (Sequential)
+
 - [x] reasoning-failures-stream_20260215 [c623d3e] - LLM reasoning failures taxonomy
 - [x] reasoning-stream-implementation_20260215 - Productize reasoning stream
 - [x] conductor-review-skill_20260215 - Review skill with severity ordering
@@ -92,6 +99,7 @@ No active tracks.
 - [x] systematic-refactor-hardening_20260215 - Modular refactor and guardrails
 
 ### P1 Parallel-Safe Tracks
+
 - [x] repo-hardening-release-ops_20260215 [r8s9t0u] - CI/CD and release policy
 - [x] repo-hardening-skill-distribution_20260215 [8712e9c] - Repository structure cleanup
 - [x] skill-distribution_20260131 [3817230] - Skillshare/AIX distribution
@@ -99,12 +107,14 @@ No active tracks.
 - [x] repo-tooling-enhancements_20260214 [6987b16] - Vale, Renovate, npx skills
 
 ### P2 Enhancement Tracks
+
 - [x] downstream-skill-sync-automation_20260215 [q7r8s9t] - Auto-sync downstream repos
 - [x] skill-expansion_20260201 [34ebfe2] - SOTA tiered architecture
 - [x] humanizer-adapters_20260125 - Adapter expansion
 - [x] migrate-warp-to-agentsmd_20260131 - Migrate to AGENTS.md
 
 ### Legacy Adapter Tracks (All Complete)
+
 - [x] adapters-expansion_20260131
 - [x] antigravity-rules-workflows_20260131
 - [x] antigravity-skills_20260131
@@ -115,11 +125,12 @@ No active tracks.
 
 ---
 
-## Archived Tracks
+## Archive Location
 
 All completed tracks are archived in `conductor/tracks/archive/`.
 
 Archive includes:
+
 - 16 completed tracks
 - Full implementation history
 - All spec.md, plan.md, metadata.json files
@@ -129,17 +140,20 @@ Archive includes:
 ## Key Deliverables
 
 ### Skills
+
 - `SKILL.md` - Canonical humanizer skill (24 patterns)
 - `SKILL_PROFESSIONAL.md` - Router with reasoning module
 - `SKILL_REASONING.md` - Reasoning failures module
 
 ### Documentation
+
 - `docs/llm-reasoning-failures-humanizer.md`
 - `docs/reasoning-failures-taxonomy.md`
 - `docs/TAXONOMY_CHANGELOG.md`
 - `docs/skill-distribution.md`
 
 ### Scripts
+
 - `scripts/compile-skill.js` - Skill compilation
 - `scripts/check-sync-clean.js` - Sync drift check
 - `scripts/validate-docs.js` - Documentation validation
@@ -147,10 +161,11 @@ Archive includes:
 - `scripts/research/citation-normalize.js` - Citation helper
 
 ### Workflows
+
 - `.github/workflows/ci.yml` - CI/CD pipeline
 - Pre-commit hooks for validation
 
 ---
 
-*Last updated: 2026-03-03*
-*All 17 tracks complete - Repository in excellent health*
+_Last updated: 2026-03-03_
+_All 17 tracks complete - Repository in excellent health_
