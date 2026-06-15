@@ -39,15 +39,15 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@types/node": "^25.6.0",
-    "eslint": "^10.2.1",
+    "@types/node": "^25.9.3",
+    "eslint": "^10.5.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-node": "^11.1.0",
     "husky": "^9.1.7",
-    "lint-staged": "^16.4.0",
+    "lint-staged": "^17.0.7",
     "markdownlint-cli": "^0.48.0",
-    "prettier": "^3.8.3",
+    "prettier": "^3.8.4",
     "typescript": "^6.0.3"
   }
 }
