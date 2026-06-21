@@ -25,6 +25,7 @@ page_raw.txt
 talk_headings.txt
 talk_raw.txt
 conductor/tracks/*/repo-data.json
+conductor/self-improvement/repo-data.json
 .github/generated/
 
 # Generated adapters (use npm run install:<platform>)

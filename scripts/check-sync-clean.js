@@ -6,7 +6,12 @@ const TARGET_FILES = ['SKILL.md', 'SKILL_PROFESSIONAL.md', 'AGENTS.md', 'README.
 function readTargets() {
   const snapshot = new Map();
   for (const file of TARGET_FILES) {
-    snapshot.set(file, fs.existsSync(file) ? fs.readFileSync(file, 'utf8') : null);
+    let content = fs.existsSync(file) ? fs.readFileSync(file, 'utf8') : null;
+    if (file === 'AGENTS.md' && content) {
+      // Normalize last_synced date to avoid calendar day drift failures in CI
+      content = content.replace(/^(\s*last_synced:\s*).+$/m, '$1<ignored>');
+    }
+    snapshot.set(file, content);
   }
   return snapshot;
 }

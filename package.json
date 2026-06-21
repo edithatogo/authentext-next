@@ -32,8 +32,7 @@
   },
   "lint-staged": {
     "**/*.{js,mjs,ts}": "eslint --fix",
-    "**/*.md": "markdownlint --fix",
-    "!{SKILL,SKILL_PROFESSIONAL}.md": "markdownlint --fix",
+    "**/!(SKILL|SKILL_PROFESSIONAL).md": "markdownlint --fix",
     "AGENTS.md": "prettier --write",
     "README.md": "prettier --write",
     "package.json": "prettier --write",
