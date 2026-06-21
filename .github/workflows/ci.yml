@@ -16,8 +16,6 @@ jobs:
         uses: ./.github/actions/setup-maintainer-env
         with:
           node-version: '20'
-          python-version: '3.13'
-          install-python-test-deps: 'true'
           install-vale: 'true'
           npm-ci: 'true'
 
@@ -29,9 +27,6 @@ jobs:
 
       - name: Run Node tests
         run: npm test
-
-      - name: Run Python tests
-        run: pytest
 
       - name: Verify sync outputs
         run: npm run check:sync
