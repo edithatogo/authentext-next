@@ -10,6 +10,6 @@
     "esModuleInterop": true,
     "resolveJsonModule": true
   },
-  "include": ["*.js"],
-  "exclude": ["src", "scripts", "adapters", "conductor", "test", "tests", "dist", "node_modules"]
+  "include": ["*.js", "scripts/**/*.js", "test/**/*.js", "skills/**/*.js"],
+  "exclude": ["node_modules", "dist"]
 }
