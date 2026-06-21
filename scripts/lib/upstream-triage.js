@@ -24,6 +24,30 @@ export const UPSTREAM_TRIAGE_RULES = [
     reason: 'Repo hygiene improvement; compare against the local MIT LICENSE before adopting.',
   },
   {
+    keywords: ['spanish', 'español', 'translation', 'translate', 'language'],
+    decision: 'reject',
+    reason:
+      'Non-English language versions and translations are out of scope for this core English Agent Skills package.',
+  },
+  {
+    keywords: ['api provider', 'api', 'atlascloud', 'external service'],
+    decision: 'reject',
+    reason:
+      'External APIs, providers, and custom runtime integrations are out of scope for English agent writing guidelines.',
+  },
+  {
+    keywords: ['readme', 'installation', 'install instructions'],
+    decision: 'defer',
+    reason:
+      'Compare with our custom Agent Skills installation guidelines (docs/skill-distribution.md) before adopting.',
+  },
+  {
+    keywords: ['overcorrection', 'fragment', 'subjectless'],
+    decision: 'defer',
+    reason:
+      'Review grammar refinement pattern against the core pattern definitions for potential overcorrection or false-positive risks.',
+  },
+  {
     keywords: [
       'pattern',
       'hyphenated',
