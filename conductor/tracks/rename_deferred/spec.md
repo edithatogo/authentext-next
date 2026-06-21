@@ -2,7 +2,7 @@
 
 **Track ID:** `rename_deferred`
 
-**Status:** in-progress
+**Status:** complete
 
 **Priority:** P1
 
