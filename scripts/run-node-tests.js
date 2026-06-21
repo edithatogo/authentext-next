@@ -19,7 +19,20 @@ if (testFiles.length === 0) {
   process.exit(1);
 }
 
-const result = spawnSync(process.execPath, ['--test', '--test-isolation=none', ...testFiles], {
+function nodeSupportsTestIsolationNone() {
+  const help = spawnSync(process.execPath, ['--help'], {
+    encoding: 'utf8',
+  });
+  const output = `${help.stdout ?? ''}${help.stderr ?? ''}`;
+  return help.status === 0 && /\btest-isolation\b/.test(output);
+}
+
+const nodeArgs = ['--test'];
+if (nodeSupportsTestIsolationNone()) {
+  nodeArgs.push('--test-isolation=none');
+}
+
+const result = spawnSync(process.execPath, [...nodeArgs, ...testFiles], {
   cwd: REPO_ROOT,
   stdio: 'inherit',
 });

@@ -3,7 +3,7 @@ name: Weekly Self-Improvement
 on:
   schedule:
     # Every Monday at 9:00 AM UTC
-    - cron: '0 9 * * 1'
+    - cron: '0 9 ** 1'
   workflow_dispatch:
     # Allow manual triggering
 
@@ -41,7 +41,7 @@ jobs:
             echo "Date: $(date)"
             echo ""
             echo "File Sizes:"
-            wc -l SKILL.md SKILL_PROFESSIONAL.md QWEN.md
+            wc -l SKILL.md SKILL_PROFESSIONAL.md references/core-patterns.md
             echo ""
             echo "AI Pattern Count in Skill:"
             grep -c -i "stands as\|testament to\|crucial\|pivotal\|vibrant\|showcasing" SKILL.md SKILL_PROFESSIONAL.md || echo "0"
@@ -64,7 +64,7 @@ jobs:
 
       - name: Gather repository intelligence and decision support
         run: |
-          node scripts/gather-repo-data.js edithatogo/humanizer-next blader/humanizer
+          node scripts/gather-repo-data.js
           node scripts/render-self-improvement-issue.js
 
       - name: Run Validation
@@ -83,8 +83,8 @@ jobs:
         with:
           name: self-improvement-data
           path: |
-            conductor/tracks/repo-self-improvement_20260303/repo-data.json
-            conductor/tracks/repo-self-improvement_20260303/upstream-decision-log.md
+            conductor/self-improvement/repo-data.json
+            conductor/self-improvement/upstream-decision-log.md
             .github/generated/self-improvement-issue.md
             .github/generated/self-improvement-decisions.md
             .github/generated/self-improvement-pr-body.md
@@ -114,7 +114,7 @@ jobs:
             automated
           draft: true
           add-paths: |
-            conductor/tracks/repo-self-improvement_20260303/upstream-decision-log.md
+            conductor/self-improvement/upstream-decision-log.md
 
       - name: Create Analysis Issue
         uses: peter-evans/create-issue-from-file@v6
@@ -130,5 +130,5 @@ jobs:
         run: |
           echo "::notice::Self-improvement cycle initiated. See issue created above for detailed analysis tasks and Adopt/Reject/Defer suggestions."
           echo "::notice::Draft PR number: ${{ steps.decision_pr.outputs.pull-request-number }}"
-          echo "::notice::The track-owned decision record at conductor/tracks/repo-self-improvement_20260303/upstream-decision-log.md has been refreshed from live data."
+          echo "::notice::The decision record at conductor/self-improvement/upstream-decision-log.md has been refreshed from live data."
           echo "::notice::Generated issue body, decision logs, and repo-data.json are attached as workflow artifacts."

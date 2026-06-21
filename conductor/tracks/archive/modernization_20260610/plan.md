@@ -39,17 +39,17 @@ Workflow: each task gets its own commit; the task line gets the 7-char SHA appen
 
 ## Phase 4: Sync Machinery Modernization
 
-- [ ] Task: Create `scripts/lib/repo-config.js` (upstream owner/repo, local repo, output paths) and refactor `scripts/check-upstream.js` and `scripts/gather-repo-data.js` to use it
-- [ ] Task: Retarget self-improvement outputs from `conductor/tracks/repo-self-improvement_20260303/` to `conductor/self-improvement/`; update `.github/workflows/self-improvement.yml` paths and artifact uploads
-- [ ] Task: Upgrade `scripts/check-upstream.js` to triage upstream PRs/issues via `gh` (open PR list, pattern-count diff, adopt/defer table output)
-- [ ] Task: Refresh `docs/SELF_IMPROVEMENT_WORKFLOW.md` and `docs/RALPH_LOOP_WORKFLOW.md` (current pattern counts, remove QWEN.md and stale PR references, drop 12/12-adapter assumptions)
-- [ ] Task: Conductor - Phase Verification and Review of Phase 4
+- [x] Task: Create `scripts/lib/repo-config.js` (upstream owner/repo, local repo, output paths) and refactor `scripts/check-upstream.js` and `scripts/gather-repo-data.js` to use it
+- [x] Task: Retarget self-improvement outputs from `conductor/tracks/repo-self-improvement_20260303/` to `conductor/self-improvement/`; update `.github/workflows/self-improvement.yml` paths and artifact uploads
+- [x] Task: Upgrade `scripts/check-upstream.js` to triage upstream PRs/issues via `gh` (open PR list, pattern-count diff, adopt/defer table output)
+- [x] Task: Refresh `docs/SELF_IMPROVEMENT_WORKFLOW.md` and `docs/RALPH_LOOP_WORKFLOW.md` (current pattern counts, remove QWEN.md and stale PR references, drop 12/12-adapter assumptions)
+- [x] Task: Conductor - Phase Verification and Review of Phase 4
 
 ## Phase 5: Repo Health and Registry Reconciliation
 
-- [ ] Task: Align versions - bump root `package.json` to match skill version and make the compile script the single version source
-- [ ] Task: Fix `scripts/run-node-tests.js` - make `--test-isolation=none` conditional on Node support (or remove)
-- [ ] Task: Reconcile `conductor/tracks.md` totals with the 24 on-disk archives; mark `citation_ref_20260216` superseded by sourceright
-- [ ] Task: Register deferred-rename follow-on track stub (`conductor/tracks/rename_deferred/spec.md`) with vetted candidates and blast-radius notes
-- [ ] Task: Final validation gate - `npm run sync && npm run validate && npm test && npm run lint:all`
-- [ ] Task: Conductor - Phase Verification and Review of Phase 5
+- [x] Task: Align versions - bump root `package.json` to match skill version and make the compile script the single version source
+- [x] Task: Fix `scripts/run-node-tests.js` - make `--test-isolation=none` conditional on Node support (or remove)
+- [x] Task: Reconcile `conductor/tracks.md` totals with the 24 on-disk archives; mark `citation_ref_20260216` superseded by sourceright
+- [x] Task: Register deferred-rename follow-on track stub (`conductor/tracks/rename_deferred/spec.md`) with vetted candidates and blast-radius notes
+- [x] Task: Final validation gate - `npm run sync && npm run validate && npm test && npm run lint:all`
+- [x] Task: Conductor - Phase Verification and Review of Phase 5

@@ -4,7 +4,7 @@
 
 **Frequency:** Weekly (Mondays at 9:00 AM)
 
-**Extension:** https://github.com/gemini-cli-extensions/ralph
+**Extension:** <https://github.com/gemini-cli-extensions/ralph>
 
 ---
 
@@ -52,6 +52,7 @@ gemini extensions install https://github.com/gemini-cli-extensions/ralph --auto-
 ### Cycle 1: AI Pattern Detection & Cleanup
 
 **Command:**
+
 ```bash
 /ralph:loop "Analyze SKILL.md and SKILL_PROFESSIONAL.md for AI writing patterns:
 
@@ -80,6 +81,7 @@ When complete, output: <promise>AI_PATTERNS_CLEANED</promise>" \
 **Expected Duration:** 30-45 minutes
 
 **Deliverables:**
+
 - Reduced AI pattern count
 - Improved pattern clarity
 - Updated examples
@@ -89,6 +91,7 @@ When complete, output: <promise>AI_PATTERNS_CLEANED</promise>" \
 ### Cycle 2: Pattern Clarity & Example Quality
 
 **Command:**
+
 ```bash
 /ralph:loop "Review all pattern definitions in SKILL.md:
 
@@ -122,6 +125,7 @@ When complete, output: <promise>PATTERNS_CLARIFIED</promise>" \
 **Expected Duration:** 45-60 minutes
 
 **Deliverables:**
+
 - Pattern quality ratings
 - Improved descriptions
 - Better examples
@@ -131,6 +135,7 @@ When complete, output: <promise>PATTERNS_CLARIFIED</promise>" \
 ### Cycle 3: Architecture & Organization
 
 **Command:**
+
 ```bash
 /ralph:loop "Analyze repository structure and organization:
 
@@ -172,6 +177,7 @@ When complete, output: <promise>ARCHITECTURE_IMPROVED</promise>" \
 **Expected Duration:** 45-60 minutes
 
 **Deliverables:**
+
 - Reorganized files (if needed)
 - Updated documentation
 - Fixed broken references
@@ -181,6 +187,7 @@ When complete, output: <promise>ARCHITECTURE_IMPROVED</promise>" \
 ### Cycle 4: Upstream Alignment
 
 **Command:**
+
 ```bash
 /ralph:loop "Compare with upstream blader/humanizer:
 
@@ -220,6 +227,7 @@ When complete, output: <promise>UPSTREAM_ALIGNED</promise>" \
 **Expected Duration:** 60-90 minutes
 
 **Deliverables:**
+
 - Upstream adoption decisions
 - Implemented patterns (if applicable)
 - Security review notes
@@ -237,22 +245,23 @@ npm test
 # Linting
 npm run lint:all
 
-# Adapter sync
+# Compile and validate maintained surface
 npm run sync
 npm run validate
 
 # File size check
-wc -l SKILL.md SKILL_PROFESSIONAL.md QWEN.md
+wc -l SKILL.md SKILL_PROFESSIONAL.md references/core-patterns.md
 
 # AI pattern count
-grep -c -i "stands as\|testament to\|crucial\|pivotal\|vibrant\|showcasing" SKILL.md SKILL_PROFESSIONAL.md QWEN.md
+grep -c -i "stands as\|testament to\|crucial\|pivotal\|vibrant\|showcasing" SKILL.md SKILL_PROFESSIONAL.md
 ```
 
 **Quality Gates:**
-- [ ] All tests passing (14/14)
+
+- [ ] All tests passing
 - [ ] No linting errors
-- [ ] All adapters synced (12/12)
-- [ ] File sizes within limits (<1000 lines)
+- [ ] `npm run sync` and `npm run validate` pass
+- [ ] SKILL.md under 500 lines; 39-pattern catalog in `src/modules/SKILL_CORE_PATTERNS.md`
 - [ ] AI pattern count reduced
 
 ---
@@ -290,7 +299,7 @@ git commit -m "self-improvement(cycle-N): [brief summary]
 - Documentation: X files
 - Tests: X/X passing
 
-Track: repo-self-improvement_20260303 (follow-up)
+Track: conductor/self-improvement
 Cycle: weekly-$(date +%Y-%m-%d)"
 
 # Create PR
@@ -306,6 +315,7 @@ gh pr create --title "Self-Improvement Cycle N - $(date +%Y-%m-%d)" \
 ### Manual Weekly Execution
 
 **Every Monday at 9:00 AM:**
+
 ```bash
 # Choose cycle based on current needs
 /ralph:loop "[cycle command]" --max-iterations 5 --completion-promise "[PROMISE]"
@@ -359,6 +369,7 @@ jobs:
 ## Completion Criteria
 
 **Cycle is complete when:**
+
 1. Ralph Loop completes with completion promise
 2. All validation passes (100% test rate)
 3. Metrics improved or stable
@@ -368,6 +379,7 @@ jobs:
 **Maximum Iterations:** 5 per cycle
 
 **Stop Conditions:**
+
 - Completion promise output
 - No further improvements identified
 - Max iterations reached
@@ -378,14 +390,14 @@ jobs:
 ## Metrics Dashboard
 
 | Metric | Baseline | Target | Current |
-|--------|----------|--------|---------|
-| SKILL.md lines | 941 | <900 | |
-| SKILL_PROFESSIONAL.md lines | 963 | <900 | |
-| QWEN.md lines | 2000+ | <1500 | |
-| AI patterns (count) | [count] | -10% | |
-| Pattern clarity (avg) | 4.0 | >4.5 | |
-| Test pass rate | 100% | 100% | |
-| Adapter sync | 12/12 | 12/12 | |
+| --- | --- | --- | --- |
+| SKILL.md lines | ~180 | <500 | - |
+| SKILL_PROFESSIONAL.md lines | ~96 | <500 | - |
+| Pattern catalog count | 39 | 39+ | - |
+| AI patterns (count) | [count] | -10% | - |
+| Pattern clarity (avg) | 4.0 | >4.5 | - |
+| Test pass rate | 100% | 100% | - |
+| Upstream triage | manual | `npm run check:upstream` | - |
 
 ---
 
@@ -396,6 +408,7 @@ jobs:
 **Symptom:** Keeps iterating beyond max iterations
 
 **Fix:**
+
 ```bash
 # Cancel the loop
 /ralph:cancel
@@ -410,6 +423,7 @@ jobs:
 **Symptom:** <5 improvements per cycle
 
 **Fix:**
+
 1. Review prompt specificity
 2. Add more context about goals
 3. Include examples of acceptable changes
@@ -420,6 +434,7 @@ jobs:
 **Symptom:** Tests fail after Ralph Loop changes
 
 **Fix:**
+
 1. Review changes made
 2. Revert problematic changes
 3. Adjust prompt to prevent similar issues
@@ -439,11 +454,13 @@ jobs:
 ### Safety
 
 1. **Run in Sandbox Mode:**
+
    ```bash
    gemini -s -y
    ```
 
 2. **Restrict Dangerous Tools:**
+
    ```json
    {
      "tools": {

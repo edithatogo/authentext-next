@@ -1,11 +1,9 @@
 import fs from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
+import { ensureSelfImprovementDir, getLocalFullName, PATHS } from './lib/repo-config.js';
+import { triageUpstreamItem } from './lib/upstream-triage.js';
 
-const __filename = fileURLToPath(import.meta.url);
-const__dirname = path.dirname(__filename);
-const REPO_ROOT = path.resolve(__dirname, '..');
-const GITHUB_API = '<https://api.github.com>';
+const GITHUB_API = 'https://api.github.com';
 
 function getGitHubHeaders() {
   return {
@@ -154,60 +152,24 @@ const LOCAL_DECISION_RULES = [
   },
 ];
 
-const UPSTREAM_DECISION_RULES = [
-  {
-    keywords: ['opencode support'],
-    decision: 'reject',
-    reason:
-      'OpenCode support is already implemented locally through the adapter distribution path, so this is not a missing capability in humanizer-next.',
-  },
-  {
-    keywords: ['wikipedia sync'],
-    decision: 'reject',
-    reason:
-      'Live upstream fetches add runtime dependencies and instability to a skill-source repo that should stay deterministic and artifact-driven.',
-  },
-  {
-    keywords: ['claude compatibility'],
-    decision: 'reject',
-    reason:
-      'Compatibility fixes should be evaluated against the local adapter architecture, not cherry-picked blindly from the upstream single-skill format.',
-  },
-  {
-    keywords: ['license file'],
-    decision: 'defer',
-    reason:
-      'Reasonable repo hygiene improvement, but lower priority than dependency maintenance and evidence-backed skill changes.',
-  },
-  {
-    keywords: ['pattern', 'hyphenated', 'rewrite', 'review score'],
-    decision: 'defer',
-    reason:
-      'Potentially useful, but it needs evidence review against the repo rubric: evidence quality, overlap with existing patterns, false-positive risk, and adapter impact.',
-  },
-];
-
-function classifyDecision(pr, scope, rules) {
+function classifyLocalDecision(pr) {
   const lowerTitle = pr.title.toLowerCase();
-  const matchedRule = rules.find((rule) =>
+  const matchedRule = LOCAL_DECISION_RULES.find((rule) =>
     rule.keywords.some((keyword) => lowerTitle.includes(keyword))
   );
 
   if (!matchedRule) {
     return {
-      scope,
+      scope: 'local',
       number: pr.number,
       title: pr.title,
       decision: 'defer',
-      reason:
-        scope === 'local'
-          ? 'No repo-specific automation rule exists for this PR yet. Review manually.'
-          : 'No automation rule matched. Review manually.',
+      reason: 'No repo-specific automation rule exists for this PR yet. Review manually.',
     };
   }
 
   return {
-    scope,
+    scope: 'local',
     number: pr.number,
     title: pr.title,
     decision: matchedRule.decision,
@@ -216,36 +178,33 @@ function classifyDecision(pr, scope, rules) {
 }
 
 function buildLocalDecisions(localPrs) {
-  return localPrs.slice(0, 10).map((pr) => classifyDecision(pr, 'local', LOCAL_DECISION_RULES));
+  return localPrs.slice(0, 10).map((pr) => classifyLocalDecision(pr));
 }
 
 function buildUpstreamDecisions(upstreamPrs) {
-  return upstreamPrs
-    .slice(0, 8)
-    .map((pr) => classifyDecision(pr, 'upstream', UPSTREAM_DECISION_RULES));
+  return upstreamPrs.slice(0, 8).map((pr) => {
+    const triage = triageUpstreamItem(pr, 'pr');
+    return {
+      scope: 'upstream',
+      number: triage.number,
+      title: triage.title,
+      decision: triage.decision,
+      reason: triage.reason,
+    };
+  });
 }
 
+const MAINTAINER_RUBRIC = `- Evidence quality: prefer changes grounded in reproducible examples or clear user pain, not vibes.
+- Pattern overlap: avoid adding new rules that duplicate existing Humanizer patterns without meaningfully improving coverage.
+- False-positive risk: reject changes that are likely to flatten legitimate human style or technical writing.
+- Distribution impact: prefer improvements that do not increase sync complexity or runtime dependencies across the Agent Skills package and MCP surface.`;
+
 async function main() {
-  const inputPath =
-    process.argv[2] ||
-    path.join(REPO_ROOT, 'conductor', 'tracks', 'repo-self-improvement_20260303', 'repo-data.json');
-  const outputPath =
-    process.argv[3] || path.join(REPO_ROOT, '.github', 'generated', 'self-improvement-issue.md');
-  const decisionsPath = outputPath.replace(
-    /self-improvement-issue\.md$/,
-    'self-improvement-decisions.md'
-  );
-  const prBodyPath = outputPath.replace(
-    /self-improvement-issue\.md$/,
-    'self-improvement-pr-body.md'
-  );
-  const trackDecisionLogPath = path.join(
-    REPO_ROOT,
-    'conductor',
-    'tracks',
-    'repo-self-improvement_20260303',
-    'upstream-decision-log.md'
-  );
+  const inputPath = process.argv[2] || PATHS.repoDataJson;
+  const outputPath = process.argv[3] || PATHS.generatedIssue;
+  const decisionsPath = PATHS.generatedDecisions;
+  const prBodyPath = PATHS.generatedPrBody;
+  const trackDecisionLogPath = PATHS.upstreamDecisionLog;
 
   const raw = fs.readFileSync(inputPath, 'utf8');
   const data = JSON.parse(raw);
@@ -263,9 +222,7 @@ async function main() {
       ? 'Review and merge the current automated dependency backlog if validation passes.'
       : 'No local automated dependency backlog is open this cycle; keep Renovate policy and required checks unchanged.';
   const decisionRecordBranch = 'automation/self-improvement-decision-record';
-  const decisionRecordPath =
-    'conductor/tracks/repo-self-improvement_20260303/upstream-decision-log.md';
-  const planPath = 'conductor/tracks/repo-self-improvement_20260303/plan.md';
+  const decisionRecordPath = 'conductor/self-improvement/upstream-decision-log.md';
   const generatedIssuePath = '.github/generated/self-improvement-issue.md';
   const generatedDecisionsPath = '.github/generated/self-improvement-decisions.md';
 
@@ -299,10 +256,7 @@ ${summarizeTopTitles(upstream.pull_requests.raw)}
 
 ## Decision Rubric
 
-- Evidence quality: prefer changes grounded in reproducible examples or clear user pain, not vibes.
-- Pattern overlap: avoid adding new rules that duplicate existing Humanizer patterns without meaningfully improving coverage.
-- False-positive risk: reject changes that are likely to flatten legitimate human style or technical writing.
-- Adapter impact: prefer improvements that do not increase sync complexity or runtime dependencies across supported adapters.
+${MAINTAINER_RUBRIC}
 
 ## Local Decision Support
 
@@ -315,9 +269,9 @@ ${formatDecisionItems(upstreamDecisions)}
 ## Recommended Actions
 
 1. ${localBacklogAction}
-2. Convert the automated Adopt / Reject / Defer suggestions above into explicit maintainer decisions on the active conductor track.
-3. Keep the repo skill-focused: validate adapter sync and distribution first, not npm publishing.
-4. Keep experimental subsystems outside the maintained skill surface; citation and reference management lives in the separate sourceright project.
+2. Convert the automated Adopt / Reject / Defer suggestions above into explicit maintainer decisions in \`conductor/self-improvement/upstream-decision-log.md\`.
+3. Keep the repo skill-focused: validate \`npm run sync\`, \`npm run validate\`, and \`npm test\` before merging skill changes.
+4. Run \`npm run check:upstream\` when reviewing upstream PRs and issues against the local 39-pattern catalog.
 `;
 
   const decisionsBody = `# Self-Improvement Decision Log
@@ -341,7 +295,7 @@ ${formatDecisionItems(upstreamDecisions)}
 
 ## Maintainer Checklist
 
-- [ ] Review the refreshed [decision record](${formatBlobUrl(local.name, decisionRecordBranch, decisionRecordPath)})
+- [ ] Review the refreshed [decision record](${formatBlobUrl(getLocalFullName(), decisionRecordBranch, decisionRecordPath)})
 - [ ] Confirm the current local dependency candidates still match repo policy
 - [ ] Confirm upstream candidates still fit the evidence, overlap, and false-positive rubric
 - [ ] Edit any final Adopt / Reject / Defer calls directly in the decision record before merging
@@ -357,10 +311,9 @@ ${formatCandidateLinks(upstream.name, upstream.pull_requests.raw.slice(0, 8))}
 
 ## Supporting Files
 
-- [Track decision record](${formatBlobUrl(local.name, decisionRecordBranch, decisionRecordPath)})
-- [Track plan](${formatBlobUrl(local.name, decisionRecordBranch, planPath)})
-- [Generated issue body](${formatBlobUrl(local.name, decisionRecordBranch, generatedIssuePath)})
-- [Generated decision log](${formatBlobUrl(local.name, decisionRecordBranch, generatedDecisionsPath)})
+- [Decision record](${formatBlobUrl(getLocalFullName(), decisionRecordBranch, decisionRecordPath)})
+- [Generated issue body](${formatBlobUrl(getLocalFullName(), decisionRecordBranch, generatedIssuePath)})
+- [Generated decision log](${formatBlobUrl(getLocalFullName(), decisionRecordBranch, generatedDecisionsPath)})
 
 ## Notes
 
@@ -370,7 +323,7 @@ ${formatCandidateLinks(upstream.name, upstream.pull_requests.raw.slice(0, 8))}
 
   const trackDecisionLogBody = `# Self-Improvement Decision Record
 
-**Track:** \`repo-self-improvement_20260303\`
+**Location:** \`conductor/self-improvement/\`
 
 **Generated:** ${data.gathered_at}
 
@@ -382,17 +335,14 @@ ${formatCandidateLinks(upstream.name, upstream.pull_requests.raw.slice(0, 8))}
 
 ## How to use this file
 
-- This file is the track-owned decision record for the weekly self-improvement workflow.
-- The workflow refreshes the candidate decisions from live repository data.
+- This file is the maintainer-owned decision record for the weekly self-improvement workflow.
+- The workflow refreshes candidate decisions from live repository data.
 - Maintainers should edit the decision text only when making an explicit final call, rather than rewriting the whole file from scratch.
-- Suggested decisions are not final approvals. They are triage inputs for the track.
+- Suggested decisions are not final approvals. They are triage inputs.
 
 ## Maintainer Decision Rubric
 
-- Evidence quality: prefer changes grounded in reproducible examples or clear user pain, not vibes.
-- Pattern overlap: avoid adding new rules that duplicate existing Humanizer patterns without meaningfully improving coverage.
-- False-positive risk: reject changes that are likely to flatten legitimate human style or technical writing.
-- Adapter impact: prefer improvements that do not increase sync complexity or runtime dependencies across supported adapters.
+${MAINTAINER_RUBRIC}
 
 ## Local Repository Decisions
 
@@ -403,6 +353,7 @@ ${formatDecisionItems(localDecisions)}
 ${formatDecisionItems(upstreamDecisions)}
 `;
 
+  ensureSelfImprovementDir();
   fs.mkdirSync(path.dirname(outputPath), { recursive: true });
   fs.writeFileSync(outputPath, body, 'utf8');
   fs.writeFileSync(decisionsPath, decisionsBody, 'utf8');
@@ -411,12 +362,12 @@ ${formatDecisionItems(upstreamDecisions)}
   console.log(`Wrote self-improvement issue body to ${outputPath}`);
   console.log(`Wrote self-improvement decision log to ${decisionsPath}`);
   console.log(`Wrote self-improvement PR body to ${prBodyPath}`);
-  console.log(`Updated track decision record at ${trackDecisionLogPath}`);
+  console.log(`Updated decision record at ${trackDecisionLogPath}`);
 }
 
 main().catch((error) => {
   console.error('Failed to render self-improvement outputs.');
-  console.error(`Input: ${process.argv[2] || 'default repo-data.json'}`);
+  console.error(`Input: ${process.argv[2] || PATHS.repoDataJson}`);
   console.error(error);
   process.exit(1);
 });

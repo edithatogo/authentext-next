@@ -1,62 +1,204 @@
 #!/usr/bin/env node
 
 import { execSync } from 'child_process';
+import {
+  getLocalFullName,
+  getLocalPatternCount,
+  getUpstreamFullName,
+  getUpstreamUrl,
+  PATHS,
+  UPSTREAM,
+  countPatternsInMarkdown,
+} from './lib/repo-config.js';
+import { formatTriageTable, triageUpstreamItem } from './lib/upstream-triage.js';
 
-const UPSTREAM_OWNER = 'blader';
-const UPSTREAM_REPO = 'humanizer';
-const UPSTREAM_URL = `https://github.com/${UPSTREAM_OWNER}/${UPSTREAM_REPO}`;
-
+/**
+ * @param {string} cmd
+ * @returns {string}
+ */
 function run(cmd) {
   try {
-    return execSync(cmd, { encoding: 'utf8', stdio: 'pipe' });
+    return execSync(cmd, { encoding: 'utf8', stdio: 'pipe', cwd: process.cwd() }).trim();
   } catch {
     return '';
   }
 }
 
-console.log('=== Humanizer Upstream Check ===\n');
-
-const upstreamCommit = run(`git ls-remote ${UPSTREAM_URL} main | cut -f1`);
-const localCommit = run('git rev-parse HEAD').trim();
-
-console.log(`Upstream: ${UPSTREAM_URL}`);
-console.log(`Upstream HEAD: ${upstreamCommit.slice(0, 7)}`);
-console.log(`Local HEAD:    ${localCommit.slice(0, 7)}`);
-
-if (!upstreamCommit) {
-  console.log('\n⚠️  Could not fetch upstream. Skipping comparison.');
-  process.exit(0);
+/**
+ * @param {string[]} args
+ * @returns {unknown|null}
+ */
+function runGhJson(args) {
+  try {
+    const output = execSync(`gh ${args.join(' ')}`, {
+      encoding: 'utf8',
+      stdio: 'pipe',
+      shell: true,
+    });
+    return JSON.parse(output);
+  } catch {
+    return null;
+  }
 }
 
-if (upstreamCommit === localCommit) {
-  console.log('\n✓ Local matches upstream - no action needed');
-} else {
-  console.log('\n⚠️  Local differs from upstream!');
-  console.log('\nFetching upstream changes...');
-  run(`git fetch ${UPSTREAM_URL} main`);
+/**
+ * @param {string} cmd
+ * @returns {string}
+ */
+function runGhRaw(cmd) {
+  try {
+    return execSync(cmd, { encoding: 'utf8', stdio: 'pipe', shell: true }).trim();
+  } catch {
+    return '';
+  }
+}
 
-  const upstreamFiles = run(`git diff ${localCommit}..${UPSTREAM_URL}/main --name-only`).trim();
-  const localFiles = run('git diff --name-only').trim();
+/**
+ * Fetch upstream SKILL.md via GitHub CLI and count patterns.
+ * @returns {number|null}
+ */
+function getUpstreamPatternCount() {
+  const repo = getUpstreamFullName();
+  const ref = UPSTREAM.defaultBranch;
+  const rawMarkdown = runGhRaw(
+    `gh api "repos/${repo}/contents/SKILL.md?ref=${ref}" -H "Accept: application/vnd.github.raw"`
+  );
 
-  console.log('\nUpstream changes:');
-  console.log(upstreamFiles || '(none)');
-
-  if (localFiles) {
-    console.log('\nLocal changes (uncommitted):');
-    console.log(localFiles);
+  if (rawMarkdown) {
+    return countPatternsInMarkdown(rawMarkdown);
   }
 
-  console.log('\n=== Recommendations ===');
-  console.log('1. Review upstream changes:');
-  console.log(`   git log ${UPSTREAM_URL}/main --oneline -10`);
-  console.log('2. If changes are significant, consider syncing');
+  const encoded = runGhJson(['api', `repos/${repo}/contents/SKILL.md`, '-f', `ref=${ref}`]);
+
+  if (encoded && typeof encoded.content === 'string') {
+    const markdown = Buffer.from(encoded.content.replace(/\n/g, ''), 'base64').toString('utf8');
+    return countPatternsInMarkdown(markdown);
+  }
+
+  return null;
 }
 
-console.log('\n=== Self-Improvement Cycle ===');
-console.log('To run the full weekly cycle manually:');
-console.log('  npm run sync && npm test');
-console.log('\nThis will:');
-console.log('  - Sync adapters from canonical SKILL.md');
-console.log('  - Run pattern drift detection');
-console.log('  - Validate all adapters');
-console.log('  - Check for upstream additions');
+function printPatternDiff() {
+  const localCount = getLocalPatternCount();
+  const upstreamCount = getUpstreamPatternCount();
+
+  console.log('=== Pattern catalog ===\n');
+  console.log(`Local module:  ${PATHS.skillCoreModule}`);
+  console.log(`Local patterns:  ${localCount ?? 'unknown'}`);
+  console.log(`Upstream SKILL:  ${getUpstreamFullName()}/${UPSTREAM.defaultBranch}`);
+  console.log(`Upstream patterns: ${upstreamCount ?? 'unknown (gh unavailable or fetch failed)'}`);
+
+  if (localCount !== null && upstreamCount !== null && localCount !== upstreamCount) {
+    const delta = localCount - upstreamCount;
+    const direction = delta > 0 ? 'ahead' : 'behind';
+    console.log(
+      `\nDelta: local is ${Math.abs(delta)} pattern(s) ${direction} of upstream SKILL.md`
+    );
+  } else if (localCount !== null && upstreamCount !== null) {
+    console.log('\nPattern counts match between local catalog and upstream SKILL.md');
+  }
+}
+
+function printGhTriage() {
+  if (!run('gh --version')) {
+    console.log('\n=== Upstream triage ===\n');
+    console.log('GitHub CLI (gh) not available. Install gh to list open PRs/issues.');
+    return;
+  }
+
+  const repoFlag = `-R ${getUpstreamFullName()}`;
+  const openPrs =
+    runGhJson([
+      'pr',
+      'list',
+      repoFlag,
+      '--state',
+      'open',
+      '--limit',
+      '15',
+      '--json',
+      'number,title',
+    ]) || [];
+  const openIssues =
+    runGhJson([
+      'issue',
+      'list',
+      repoFlag,
+      '--state',
+      'open',
+      '--limit',
+      '15',
+      '--json',
+      'number,title',
+    ]) || [];
+
+  const triageRows = [
+    ...openPrs.map((pr) => triageUpstreamItem(pr, 'pr')),
+    ...openIssues.map((issue) => triageUpstreamItem(issue, 'issue')),
+  ];
+
+  console.log('\n=== Upstream triage (open PRs and issues) ===\n');
+  console.log(formatTriageTable(triageRows));
+  console.log(
+    '\nRecord explicit adopt/defer/reject decisions in conductor/self-improvement/upstream-decision-log.md'
+  );
+}
+
+function getUpstreamHeadCommit() {
+  const upstreamUrl = getUpstreamUrl();
+  try {
+    const output = execSync(`git ls-remote ${upstreamUrl} ${UPSTREAM.defaultBranch}`, {
+      encoding: 'utf8',
+      stdio: 'pipe',
+    }).trim();
+    const firstLine = output.split('\n')[0] || '';
+    return firstLine.split(/\s+/)[0] || '';
+  } catch {
+    return '';
+  }
+}
+
+function printGitHeadComparison() {
+  const upstreamUrl = getUpstreamUrl();
+  const upstreamCommit = getUpstreamHeadCommit();
+  const localCommit = run('git rev-parse HEAD');
+
+  console.log('=== Humanizer Upstream Check ===\n');
+  console.log(`Local repository: ${getLocalFullName()}`);
+  console.log(`Upstream:       ${upstreamUrl}`);
+  console.log(`Upstream HEAD:  ${upstreamCommit ? upstreamCommit.slice(0, 7) : 'unknown'}`);
+  console.log(`Local HEAD:     ${localCommit ? localCommit.slice(0, 7) : 'unknown'}`);
+
+  if (!upstreamCommit) {
+    console.log('\nCould not fetch upstream HEAD. Skipping git diff recommendations.');
+    return;
+  }
+
+  if (upstreamCommit === localCommit) {
+    console.log('\nLocal HEAD matches upstream main (same commit).');
+  } else {
+    console.log('\nLocal HEAD differs from upstream main.');
+    console.log('\nSuggested review commands:');
+    console.log(`  gh repo view ${getUpstreamFullName()}`);
+    console.log(`  git fetch ${upstreamUrl} ${UPSTREAM.defaultBranch}`);
+    console.log(`  git log ${upstreamUrl}/${UPSTREAM.defaultBranch} --oneline -10`);
+  }
+}
+
+function printSelfImprovementHint() {
+  console.log('\n=== Self-improvement cycle ===');
+  console.log('Gather live repo intelligence:');
+  console.log('  node scripts/gather-repo-data.js');
+  console.log('  node scripts/render-self-improvement-issue.js');
+  console.log('\nValidate maintained surface:');
+  console.log('  npm run sync && npm run validate && npm test');
+}
+
+function main() {
+  printGitHeadComparison();
+  printPatternDiff();
+  printGhTriage();
+  printSelfImprovementHint();
+}
+
+main();

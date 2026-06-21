@@ -11,11 +11,16 @@
  */
 
 import fs from 'fs';
-import path from 'path';
+import {
+  ensureSelfImprovementDir,
+  getLocalFullName,
+  getUpstreamFullName,
+  PATHS,
+} from './lib/repo-config.js';
 
-const LOCAL_REPO = process.argv[2] || 'edithatogo/humanizer-next';
-const UPSTREAM_REPO = process.argv[3] || 'blader/humanizer';
-const OUTPUT_DIR = './conductor/tracks/repo-self-improvement_20260303';
+const LOCAL_REPO = process.argv[2] || getLocalFullName();
+const UPSTREAM_REPO = process.argv[3] || getUpstreamFullName();
+const OUTPUT_DIR = PATHS.selfImprovementDir;
 
 // GitHub API base URL
 const GITHUB_API = 'https://api.github.com';
@@ -372,12 +377,8 @@ async function main() {
     }
 
     // Write output
-    const outputPath = path.join(OUTPUT_DIR, 'repo-data.json');
-
-    // Ensure output directory exists
-    if (!fs.existsSync(OUTPUT_DIR)) {
-      fs.mkdirSync(OUTPUT_DIR, { recursive: true });
-    }
+    ensureSelfImprovementDir();
+    const outputPath = PATHS.repoDataJson;
 
     fs.writeFileSync(outputPath, JSON.stringify(report, null, 2));
 

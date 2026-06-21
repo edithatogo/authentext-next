@@ -4,7 +4,7 @@
 
 **Frequency:** Weekly (Mondays at 9:00 AM)
 
-**Primary Tool:** Ralph Loop Extension (https://github.com/gemini-cli-extensions/ralph)
+**Primary Tool:** Ralph Loop Extension (<https://github.com/gemini-cli-extensions/ralph>)
 
 **Alternative:** Manual process (if Ralph Loop unavailable)
 
@@ -15,11 +15,13 @@
 ### With Ralph Loop Extension (Recommended)
 
 **Install:**
+
 ```bash
 gemini extensions install https://github.com/gemini-cli-extensions/ralph --auto-update
 ```
 
 **Run Cycle:**
+
 ```bash
 /ralph:loop "[cycle command]" --max-iterations 5 --completion-promise "[PROMISE]"
 ```
@@ -39,24 +41,27 @@ Follow the manual process in the original workflow documentation.
 ### Step 1: Preparation (15 minutes)
 
 **Create Working Branch:**
+
 ```bash
 git checkout -b self-improvement-YYYY-MM-DD
 ```
 
 **Gather Metrics:**
+
 ```bash
 # Count AI patterns in skill files
 grep -c "stands as\|testament to\|crucial\|pivotal" SKILL.md SKILL_PROFESSIONAL.md
 
 # Check file sizes
-wc -l SKILL.md SKILL_PROFESSIONAL.md QWEN.md
+wc -l SKILL.md SKILL_PROFESSIONAL.md references/core-patterns.md
 
-# Run validation
-npm run validate
+# Upstream triage
+npm run check:upstream
 ```
 
 **Document Baseline:**
 Create `docs/self-improvement/YYYY-MM-DD-baseline.md` with:
+
 - Current file sizes
 - AI pattern count
 - Known issues
@@ -67,7 +72,8 @@ Create `docs/self-improvement/YYYY-MM-DD-baseline.md` with:
 ### Step 2: Analysis Pass 1 - AI Pattern Detection (30 minutes)
 
 **Prompt:**
-```
+
+```markdown
 Scan SKILL.md and SKILL_PROFESSIONAL.md for AI writing patterns:
 
 1. Significance inflation: "stands as", "testament to", "pivotal", "crucial"
@@ -88,6 +94,7 @@ Output as a table.
 ```
 
 **Action:**
+
 - Review findings
 - Apply high-confidence fixes
 - Flag uncertain cases for manual review
@@ -97,7 +104,8 @@ Output as a table.
 ### Step 3: Analysis Pass 2 - Pattern Clarity (30 minutes)
 
 **Prompt:**
-```
+
+```markdown
 Review all pattern definitions in SKILL.md:
 
 1. Is the pattern description clear and actionable?
@@ -115,6 +123,7 @@ Flag patterns needing improvement.
 ```
 
 **Action:**
+
 - Improve low-rated patterns
 - Add missing examples
 - Clarify ambiguous descriptions
@@ -125,7 +134,8 @@ Flag patterns needing improvement.
 ### Step 4: Analysis Pass 3 - Architecture & Organization (30 minutes)
 
 **Prompt:**
-```
+
+```markdown
 Analyze the repository structure:
 
 1. **File Organization:**
@@ -152,6 +162,7 @@ List specific improvements for each category.
 ```
 
 **Action:**
+
 - Reorganize files if needed
 - Update documentation
 - Fix broken references
@@ -162,6 +173,7 @@ List specific improvements for each category.
 ### Step 5: Analysis Pass 4 - Upstream Alignment (30 minutes)
 
 **Check Upstream:**
+
 ```bash
 # Fetch latest from upstream
 git fetch upstream main
@@ -173,7 +185,8 @@ git fetch upstream main
 ```
 
 **Prompt:**
-```
+
+```markdown
 Compare current implementation with upstream blader/humanizer:
 
 1. Are there new patterns we haven't adopted?
@@ -189,6 +202,7 @@ For each potential adoption:
 ```
 
 **Action:**
+
 - Create adoption plan for high-value items
 - Document deferrals with rationale
 - Close loop with upstream if rejecting
@@ -198,6 +212,7 @@ For each potential adoption:
 ### Step 6: Validation & Testing (30 minutes)
 
 **Run Full Validation:**
+
 ```bash
 # Linting
 npm run lint:all
@@ -205,19 +220,20 @@ npm run lint:all
 # Tests
 npm test
 
-# Adapter sync
+# Compile and validate maintained surface
 npm run sync
 npm run validate
 
 # File size check
-wc -l SKILL.md SKILL_PROFESSIONAL.md QWEN.md
+wc -l SKILL.md SKILL_PROFESSIONAL.md references/core-patterns.md
 ```
 
 **Quality Gates:**
+
 - [ ] All tests passing
 - [ ] No linting errors
-- [ ] All adapters synced
-- [ ] File sizes within limits (<1000 lines for skills)
+- [ ] `npm run sync` and `npm run validate` pass
+- [ ] SKILL.md under 500 lines; pattern catalog at 39 patterns in `src/modules/SKILL_CORE_PATTERNS.md`
 - [ ] AI pattern count reduced from baseline
 
 ---
@@ -226,6 +242,7 @@ wc -l SKILL.md SKILL_PROFESSIONAL.md QWEN.md
 
 **Create Summary:**
 Create `docs/self-improvement/YYYY-MM-DD-summary.md`:
+
 - Changes made
 - Patterns improved
 - Architecture changes
@@ -234,6 +251,7 @@ Create `docs/self-improvement/YYYY-MM-DD-summary.md`:
 - Lessons learned
 
 **Commit:**
+
 ```bash
 git add -A
 git commit -m "self-improvement(YYYY-MM-DD): [brief summary]
@@ -243,13 +261,14 @@ git commit -m "self-improvement(YYYY-MM-DD): [brief summary]
 - Architecture: [changes]
 - Upstream: [adoptions]
 
-Track: repo-self-improvement_20260303
+Track: conductor/self-improvement
 Cycle: weekly-YYYY-MM-DD"
 
 git push -u origin self-improvement-YYYY-MM-DD
 ```
 
 **Create PR:**
+
 ```bash
 gh pr create --title "Self-Improvement Cycle YYYY-MM-DD" \
   --body "Weekly self-improvement cycle. See docs/self-improvement/YYYY-MM-DD-summary.md for details." \
@@ -261,6 +280,7 @@ gh pr create --title "Self-Improvement Cycle YYYY-MM-DD" \
 ## Completion Criteria
 
 **Cycle is complete when:**
+
 1. All 7 steps completed
 2. Validation passes (100% test pass rate)
 3. AI pattern count reduced or stable
@@ -271,6 +291,7 @@ gh pr create --title "Self-Improvement Cycle YYYY-MM-DD" \
 **Maximum Iterations:** 5 passes per analysis type
 
 **Stop Conditions:**
+
 - No further improvements identified
 - Diminishing returns (<5 improvements per pass)
 - Time budget exceeded (3 hours)
@@ -280,14 +301,15 @@ gh pr create --title "Self-Improvement Cycle YYYY-MM-DD" \
 ## Metrics to Track
 
 | Metric | Baseline | Target | Current |
-|--------|----------|--------|---------|
-| SKILL.md lines | 941 | <900 | |
-| SKILL_PROFESSIONAL.md lines | 963 | <900 | |
-| QWEN.md lines | 2000+ | <1500 | |
-| AI patterns (count) | | -10% | |
-| Pattern clarity (avg) | | >4.0 | |
-| Test pass rate | 100% | 100% | |
-| Adapter sync | 12/12 | 12/12 | |
+| --- | --- | --- | --- |
+| SKILL.md lines | ~180 | <500 | - |
+| SKILL_PROFESSIONAL.md lines | ~96 | <500 | - |
+| references/core-patterns.md lines | catalog | stable | - |
+| Pattern catalog count | 39 | 39+ | - |
+| AI patterns (count) | - | -10% | - |
+| Pattern clarity (avg) | - | >4.0 | - |
+| Test pass rate | 100% | 100% | - |
+| Upstream triage | manual | `npm run check:upstream` | - |
 
 ---
 
@@ -299,7 +321,7 @@ gh pr create --title "Self-Improvement Cycle YYYY-MM-DD" \
 - `allowed-tools:` without security review
 - Module references without ADR
 - Core patterns (1-24) without testing
-- Adapter files without sync script
+- Adapter bundles (removed; Agent Skills + `references/` is the distribution model)
 - CI/CD configuration without testing
 
 ### Always Require Human Review
@@ -315,12 +337,14 @@ gh pr create --title "Self-Improvement Cycle YYYY-MM-DD" \
 ## Schedule
 
 **Weekly Cycle:**
+
 - **When:** Mondays, 9:00 AM - 12:00 PM
 - **Duration:** 3 hours max
 - **Owner:** Rotating (assign in weekly planning)
 - **PR Review:** Within 24 hours
 
 **Monthly Retrospective:**
+
 - **When:** Last Friday of month
 - **Duration:** 1 hour
 - **Focus:** Trends, patterns, process improvements
@@ -331,6 +355,7 @@ gh pr create --title "Self-Improvement Cycle YYYY-MM-DD" \
 ## Tools & Scripts
 
 ### Pattern Counter
+
 ```bash
 #!/bin/bash
 # scripts/count-ai-patterns.sh
@@ -342,21 +367,25 @@ grep -c -i "stands as\|testament to\|crucial\|pivotal\|vibrant\|showcasing" SKIL
 echo ""
 echo "SKILL_PROFESSIONAL.md:"
 grep -c -i "stands as\|testament to\|crucial\|pivotal\|vibrant\|showcasing" SKILL_PROFESSIONAL.md || echo "0"
-echo ""
-echo "QWEN.md:"
-grep -c -i "stands as\|testament to\|crucial\|pivotal\|vibrant\|showcasing" QWEN.md || echo "0"
 ```
 
 ### File Size Monitor
+
 ```bash
 #!/bin/bash
 # scripts/check-file-sizes.sh
 
 echo "=== File Size Check ==="
 echo ""
-wc -l SKILL.md SKILL_PROFESSIONAL.md QWEN.md
+wc -l SKILL.md SKILL_PROFESSIONAL.md references/core-patterns.md
 echo ""
-echo "Limits: SKILL.md <1000, SKILL_PROFESSIONAL.md <1000, QWEN.md <1500"
+echo "Limits: SKILL.md <500, SKILL_PROFESSIONAL.md <500 (Agent Skills spec)"
+```
+
+### Upstream Triage
+
+```bash
+npm run check:upstream
 ```
 
 ---
@@ -364,12 +393,14 @@ echo "Limits: SKILL.md <1000, SKILL_PROFESSIONAL.md <1000, QWEN.md <1500"
 ## Continuous Improvement
 
 **After Each Cycle:**
+
 1. What worked well?
 2. What could be improved?
 3. What patterns keep appearing?
 4. Are we making progress on long-term goals?
 
 **Monthly:**
+
 - Review all weekly cycles
 - Identify recurring issues
 - Adjust prompts and process
@@ -377,6 +408,5 @@ echo "Limits: SKILL.md <1000, SKILL_PROFESSIONAL.md <1000, QWEN.md <1500"
 
 ---
 
-*Workflow Version: 1.0*
-*Created: 2026-03-03*
-*Next Review: 2026-04-03*
+*Workflow Version: 2.0*
+*Updated: 2026-06-10 (Agent Skills migration, conductor/self-improvement paths)*

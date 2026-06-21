@@ -93,6 +93,70 @@ function extractFrontmatter(content) {
 }
 
 /**
+ * Update a scalar field inside YAML frontmatter (adapter_metadata block or top-level).
+ * @param {string} filePath
+ * @param {string} key
+ * @param {string} value
+ */
+function syncYamlFrontmatterField(filePath, key, value) {
+  if (!fs.existsSync(filePath)) {
+    return;
+  }
+
+  const content = fs.readFileSync(filePath, 'utf8');
+  const pattern = new RegExp(`^(\\s*${key}:\\s*)(.+)$`, 'm');
+  if (!pattern.test(content)) {
+    return;
+  }
+
+  const updated = content.replace(pattern, `$1${value}`);
+  if (updated !== content) {
+    fs.writeFileSync(filePath, updated, 'utf8');
+    console.log(`✓ Synced ${path.basename(filePath)} ${key} → ${value}`);
+  }
+}
+
+/**
+ * Propagate skill version from module frontmatter to repo manifests.
+ * @param {string} version
+ */
+function syncRepoVersion(version) {
+  const pkgPath = path.join(ROOT_DIR, 'package.json');
+  const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8'));
+
+  if (pkg.version !== version) {
+    pkg.version = version;
+    fs.writeFileSync(pkgPath, `${JSON.stringify(pkg, null, 2)}\n`, 'utf8');
+    console.log(`✓ Synced package.json version → ${version}`);
+  }
+
+  const lockPath = path.join(ROOT_DIR, 'package-lock.json');
+  if (fs.existsSync(lockPath)) {
+    const lock = JSON.parse(fs.readFileSync(lockPath, 'utf8'));
+    let lockChanged = false;
+
+    if (lock.version !== version) {
+      lock.version = version;
+      lockChanged = true;
+    }
+
+    if (lock.packages?.[''] && lock.packages[''].version !== version) {
+      lock.packages[''].version = version;
+      lockChanged = true;
+    }
+
+    if (lockChanged) {
+      fs.writeFileSync(lockPath, `${JSON.stringify(lock, null, 2)}\n`, 'utf8');
+      console.log(`✓ Synced package-lock.json version → ${version}`);
+    }
+  }
+
+  const syncedDate = new Date().toISOString().slice(0, 10);
+  syncYamlFrontmatterField(path.join(ROOT_DIR, 'AGENTS.md'), 'skill_version', version);
+  syncYamlFrontmatterField(path.join(ROOT_DIR, 'AGENTS.md'), 'last_synced', syncedDate);
+}
+
+/**
 
 * @param {string} content
 * @returns {string}
@@ -373,6 +437,9 @@ function compile() {
       reasoning: readModule(MODULES.reasoning),
     };
 
+    const skillVersion = extractFrontmatter(modules.core)?.version ?? '3.0.0';
+    syncRepoVersion(skillVersion);
+
     writeReferenceTree(modules);
 
     const skillContent = compileStandardSkill(modules.core, Boolean(modules.reasoning));
@@ -388,7 +455,7 @@ function compile() {
     console.log('\n╔════════════════════════════════════════╗');
     console.log('║  ✓ Compilation Complete              ║');
     console.log('╚════════════════════════════════════════╝');
-    console.log(`\nVersion: ${extractFrontmatter(modules.core)?.version ?? '3.0.0'}`);
+    console.log(`\nVersion: ${skillVersion}`);
     console.log('Output: Agent Skills package (SKILL.md + references/)');
   } catch (error) {
     console.error('\n❌ Compilation failed:');

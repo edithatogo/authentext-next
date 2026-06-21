@@ -2,9 +2,9 @@
 
 This document covers how to install and verify the maintained Humanizer Agent Skills package. The repo builds a spec-compliant skill tree from `src/modules/`:
 
-- `SKILL.md` — standard variant (workflow and detection guardrails; under 500 lines)
-- `SKILL_PROFESSIONAL.md` — pro variant with module routing
-- `references/` — full pattern catalogs and specialized modules (progressive disclosure)
+- `SKILL.md`: standard variant (workflow and detection guardrails; under 500 lines)
+- `SKILL_PROFESSIONAL.md`: pro variant with module routing
+- `references/`: full pattern catalogs and specialized modules (progressive disclosure)
 
 ## Source of truth
 
@@ -43,7 +43,7 @@ Tool-backed sub-skills (`humanizer-next`, `humanizer-logic`, `humanizer-read`, `
 npm run install:mcp-server
 ```
 
-Citation tooling lives in the separate **sourceright** project; it is not part of this package.
+Citation tooling lives in the separate **sourceright** project; it's not part of this package.
 
 ## Local verification
 
@@ -58,5 +58,5 @@ Confirm `SKILL.md` stays under 500 lines and that `references/core-patterns.md` 
 
 ## Notes
 
-- This repository does not publish per-platform adapter bundles (`.agent/`, Copilot shims, etc.).
+- This repository doesn't publish per-platform adapter bundles (`.agent/`, Copilot shims, etc.).
 - Keep distribution guidance aligned with the root Agent Skills outputs, not legacy adapter trees.

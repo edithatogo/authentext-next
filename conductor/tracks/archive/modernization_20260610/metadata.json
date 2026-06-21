@@ -1,0 +1,10 @@
+{
+  "track_id": "modernization_20260610",
+  "type": "feature",
+  "status": "completed",
+  "created_at": "2026-06-10T12:25:00Z",
+  "updated_at": "2026-06-10T23:30:00Z",
+  "completed_at": "2026-06-10T23:30:00Z",
+  "description": "Bleeding-edge modernization: upstream v2.8.0 sync (patterns 31-33), sourceright citation extraction, Agent Skills standard migration with adapter removal and npm workspaces, sync-machinery parameterization, and repo health fixes. Rename deferred to rename_deferred stub.",
+  "current_phase": "Complete"
+}

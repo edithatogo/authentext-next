@@ -8,18 +8,17 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ## Active Tracks
 
-- [~] **modernization_20260610** (P0) - Bleeding-edge modernization: upstream v2.8.0 sync, sourceright extraction, Agent Skills standard migration, sync-machinery and health fixes. See [`tracks/modernization_20260610/`](./tracks/modernization_20260610/spec.md).
+- [ ] **rename_deferred** (deferred stub) - Repository/skill rename follow-on; candidates documented, not scheduled. See [`tracks/rename_deferred/`](./tracks/rename_deferred/spec.md).
 
 ---
 
 ## Archived Tracks
 
-**Total Tracks Completed:** 21
-**Total Tasks Completed:** ~324
-**Completion Date:** 2026-04-26
+**Total archived track directories:** 25 (24 legacy + `modernization_20260610`)
 
-**Latest Archives:**
+**Latest archives:**
 
+- modernization_20260610 (Bleeding-edge modernization: upstream v2.8.0, sourceright extraction, Agent Skills migration)
 - v4-architecture_20260415 (Modular V4 Architecture & Ecosystem Overhaul)
 - upstream-pr-adoption_20260304 (Patterns 28-30 adopted)
 - self-improvement-cycle2_20260304 (Ralph Loop automation scheduled)
@@ -27,6 +26,18 @@ This file tracks all major tracks for the project. Each track has its own detail
 ---
 
 ## Completed Tracks Summary
+
+### P0 Critical - Bleeding-Edge Modernization (Latest)
+
+- [x] **modernization_20260610** - Bleeding-edge modernization
+  - **Duration:** 1 day (2026-06-10)
+  - **Achievements:**
+    - Upstream v2.8.0 sync (patterns 31-33 as local 35-37, detection guidance, LICENSE)
+    - Sourceright citation surface extracted
+    - Agent Skills standard package (`SKILL.md` + `references/`), `.agent/` removed, npm workspaces
+    - Sync machinery parameterized (`scripts/lib/repo-config.js`, `conductor/self-improvement/`)
+    - Repo health: version sync via compile, test-runner fix, tracks registry reconciled
+  - **Deliverables:** See [`tracks/archive/modernization_20260610/`](./tracks/archive/modernization_20260610/spec.md)
 
 ### P0 Critical - V4 Architecture & Ecosystem Overhaul
 
@@ -39,7 +50,7 @@ This file tracks all major tracks for the project. Each track has its own detail
     - Final validation complete
   - **Deliverables:** 29/29 tasks complete
 
-### P0 Critical - Upstream Adoption (Latest)
+### P0 Critical - Upstream Adoption
 
 - [x] **upstream-pr-adoption_20260304** [84df0b8] - Upstream PR adoption (Patterns 28-30)
   - **Duration:** 1 hour
@@ -66,25 +77,26 @@ This file tracks all major tracks for the project. Each track has its own detail
     - 5 modules created (CORE, TECHNICAL, ACADEMIC, GOVERNANCE, REASONING)
     - Compile script assembles SKILL.md from modules
     - Version bumped to 3.0.0
-    - All 16 adapters updated
-    - All tests passing (14/14)
+    - All tests passing
   - **Deliverables:** 5 module files, updated compile script
-  - **Status:** ADR-001 complete, upstream PRs deferred to future track
 
 ### P1 Maintenance & Improvement (Previous)
 
 - [x] **repo-self-improvement_20260303** [70b0b88] - Repository self-improvement cycle #1
-  - **Duration:** 1 day (21x faster than estimated)
+  - **Duration:** 1 day
   - **Achievements:**
-    - 9/9 Dependabot PRs merged
+    - Dependabot backlog merged
     - SECURITY.md created
-    - 20 upstream PRs assessed
+    - Upstream PR assessment workflow
     - ADR-001 created (hybrid modular architecture)
-    - Release automation configured
     - Self-improvement workflow scheduled
   - **Deliverables:** 18 documentation files
-  - **Test Pass Rate:** 100% (14/14)
-  - **Adapter Sync:** 100% (12/12)
+
+### Superseded / Extracted Tracks
+
+- [x] **citation_ref_20260216** - Citation/reference management module
+  - **Status:** **Superseded by sourceright extraction** (Phase 2 of `modernization_20260610`)
+  - **Note:** Citation manager tooling and MCP cite skill removed from this repo; academic citation _patterns_ (A9/A10) remain in `SKILL_ACADEMIC.md`. Permanent home: sourceright project.
 
 ---
 
@@ -129,11 +141,7 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 All completed tracks are archived in `conductor/tracks/archive/`.
 
-Archive includes:
-
-- 16 completed tracks
-- Full implementation history
-- All spec.md, plan.md, metadata.json files
+Live self-improvement outputs (not a track): `conductor/self-improvement/`
 
 ---
 
@@ -141,9 +149,9 @@ Archive includes:
 
 ### Skills
 
-- `SKILL.md` - Canonical humanizer skill (24 patterns)
-- `SKILL_PROFESSIONAL.md` - Router with reasoning module
-- `SKILL_REASONING.md` - Reasoning failures module
+- `SKILL.md` - Agent Skills standard manifest (~180 lines, under 500)
+- `SKILL_PROFESSIONAL.md` - Pro router variant
+- `references/` - Progressive disclosure modules (39-pattern catalog in `core-patterns.md`)
 
 ### Documentation
 
@@ -151,20 +159,24 @@ Archive includes:
 - `docs/reasoning-failures-taxonomy.md`
 - `docs/TAXONOMY_CHANGELOG.md`
 - `docs/skill-distribution.md`
+- `docs/citation-manager-boundary.md` (sourceright home)
 
 ### Scripts
 
-- `scripts/compile-skill.js` - Skill compilation
+- `scripts/compile-skill.js` - Skill compilation and version sync
+- `scripts/lib/repo-config.js` - Upstream/local repo configuration
+- `scripts/check-upstream.js` - Upstream triage and pattern diff
 - `scripts/check-sync-clean.js` - Sync drift check
 - `scripts/validate-docs.js` - Documentation validation
-- `scripts/run-tests.js` - Test runner
+- `scripts/gather-repo-data.js` / `scripts/render-self-improvement-issue.js` - Self-improvement cycle
 
 ### Workflows
 
 - `.github/workflows/ci.yml` - CI/CD pipeline
+- `.github/workflows/self-improvement.yml` - Weekly self-improvement
 - Pre-commit hooks for validation
 
 ---
 
-_Last updated: 2026-03-03_
-_All 17 tracks complete - Repository in excellent health_
+_Last updated: 2026-06-10_
+_Modernization track complete — Agent Skills package is the maintained distribution surface_
