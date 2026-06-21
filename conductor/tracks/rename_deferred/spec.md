@@ -2,9 +2,11 @@
 
 **Track ID:** `rename_deferred`
 
-**Status:** stub (not scheduled)
+**Status:** in-progress
 
-**Priority:** deferred
+**Priority:** P1
+
+**Selected Candidate:** `authentext`
 
 **Created:** 2026-06-10
 

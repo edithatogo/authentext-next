@@ -8,7 +8,7 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ## Active Tracks
 
-- [ ] **rename_deferred** (deferred stub) - Repository/skill rename follow-on; candidates documented, not scheduled. See [`tracks/rename_deferred/`](./tracks/rename_deferred/spec.md).
+- [~] **rename_deferred** (P1) - Repository/skill rename to Authentext. See [`tracks/rename_deferred/`](./tracks/rename_deferred/spec.md).
 
 ---
 
